@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TaskManager {
-    private static int idInc = 0;
+    private int idInc = 0;
 
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
@@ -60,36 +60,48 @@ public class TaskManager {
         return epics.get(id);
     }
 
-    public void addTask(Task task) {
+    public Task addTask(Task task) {
         task.setId(++idInc);
         tasks.put(task.getId(), task);
+
+        return task;
     }
 
-    public void addSubtask(Subtask subtask) {
+    public Subtask addSubtask(Subtask subtask) {
         subtask.setId(++idInc);
         subtask.getEpic().getSubtasks().add(subtask);
         subtasks.put(subtask.getId(), subtask);
 
         updateEpicStatus(subtask.getEpic());
+
+        return subtask;
     }
 
-    public void addEpic(Epic epic) {
+    public Epic addEpic(Epic epic) {
         epic.setId(++idInc);
         epics.put(epic.getId(), epic);
+
+        return epic;
     }
 
-    public void updateTask(Task task) {
+    public Task updateTask(Task task) {
         tasks.put(task.getId(), task);
+
+        return task;
     }
 
-    public void updateSubtask(Subtask subtask) {
+    public Subtask updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
 
         updateEpicStatus(subtask.getEpic());
+
+        return subtask;
     }
 
-    public void updateEpic(Epic epic) {
+    public Epic updateEpic(Epic epic) {
         epics.put(epic.getId(), epic);
+
+        return epic;
     }
 
     public void deleteTaskById(int id) {
