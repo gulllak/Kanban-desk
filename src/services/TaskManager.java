@@ -85,23 +85,34 @@ public class TaskManager {
     }
 
     public Task updateTask(Task task) {
-        tasks.put(task.getId(), task);
+        if(tasks.containsKey(task.getId())) {
+            tasks.put(task.getId(), task);
 
-        return task;
+            return task;
+        } else {
+            return null;
+        }
     }
 
     public Subtask updateSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
+        if(subtasks.containsKey(subtask.getId())) {
+            subtasks.put(subtask.getId(), subtask);
 
-        updateEpicStatus(subtask.getEpic());
-
-        return subtask;
+            updateEpicStatus(subtask.getEpic());
+            return subtask;
+        } else {
+            return null;
+        }
     }
 
     public Epic updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
+        if(epics.containsKey(epic.getId())) {
+            epics.put(epic.getId(), epic);
 
-        return epic;
+            return epic;
+        } else {
+            return null;
+        }
     }
 
     public void deleteTaskById(int id) {
