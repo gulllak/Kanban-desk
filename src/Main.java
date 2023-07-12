@@ -1,12 +1,16 @@
+import interfaces.HistoryManager;
 import models.Epic;
 import models.Subtask;
 import models.Task;
-import services.TaskManager;
+import interfaces.TaskManager;
+import services.Managers;
 import utils.TaskStatus;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        HistoryManager historyManager = Managers.getDefaultHistory();
+        TaskManager taskManager = Managers.getDefault(historyManager);
+
         Task task1 = new Task("Помыть кота", "Берем кота и моем");
         Task task2 = new Task("Сходить к зубному", "Запись на 20:00");
         taskManager.addTask(task1);
@@ -27,6 +31,39 @@ public class Main {
         Subtask subtask3 = new Subtask("Купить стейк", "Продукты", epic2);
         taskManager.addEpic(epic2);
         taskManager.addSubtask(subtask3);
+
+        //---------------------------------
+
+        taskManager.getTaskById(1);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getTaskById(2);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getEpicById(3);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getSubtaskById(4);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getSubtaskById(5);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getEpicById(6);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getSubtaskById(7);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(2);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+        taskManager.getSubtaskById(7);
+        historyManager.getHistory().forEach(System.out::println);
+        System.out.println();
+
 
         //---------------------------------
         System.out.println("ДО");
