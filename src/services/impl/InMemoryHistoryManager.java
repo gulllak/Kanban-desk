@@ -1,7 +1,7 @@
-package services;
+package services.impl;
 
-import interfaces.HistoryManager;
 import models.Task;
+import services.HistoryManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +12,14 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        checkHistorySize();
+        if(history.size() == 10) {
+            history.remove(0);
+        }
         history.add(task);
     }
 
     @Override
     public List<Task> getHistory() {
         return history;
-    }
-
-    private void checkHistorySize() {
-        if(history.size() == 10) {
-            history.remove(0);
-        }
     }
 }
