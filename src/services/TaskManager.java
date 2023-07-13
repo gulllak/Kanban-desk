@@ -1,4 +1,4 @@
-package interfaces;
+package services;
 
 import models.Epic;
 import models.Subtask;
@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TaskManager {
 
-
+    HistoryManager getHistoryManager();
     List<Task> getAllTask();
 
     List<Subtask> getAllSubtask();
