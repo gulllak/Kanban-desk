@@ -1,10 +1,11 @@
-package services;
+package services.impl;
 
-import interfaces.HistoryManager;
-import interfaces.TaskManager;
 import models.Epic;
 import models.Subtask;
 import models.Task;
+import services.HistoryManager;
+import services.Managers;
+import services.TaskManager;
 import utils.TaskStatus;
 
 import java.util.ArrayList;
@@ -14,18 +15,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
-    HistoryManager historyManager;
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
     private int idInc = 0;
-
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Subtask> subtasks;
     private final HashMap<Integer, Epic> epics;
 
-    public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
+    public InMemoryTaskManager() {
         tasks = new HashMap<>();
         subtasks = new HashMap<>();
         epics = new HashMap<>();
+    }
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 
     @Override
