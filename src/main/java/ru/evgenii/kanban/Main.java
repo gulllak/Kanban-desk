@@ -1,8 +1,11 @@
-import models.Epic;
-import models.Subtask;
-import models.Task;
-import services.TaskManager;
-import services.Managers;
+package ru.evgenii.kanban;
+
+import ru.evgenii.kanban.models.Epic;
+import ru.evgenii.kanban.models.Subtask;
+import ru.evgenii.kanban.models.Task;
+import ru.evgenii.kanban.services.TaskManager;
+import ru.evgenii.kanban.services.Managers;
+import ru.evgenii.kanban.utils.TaskStatus;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,8 +33,8 @@ public class Main {
         taskManager.addEpic(epic2);
 
         //---------------------------------
-
-
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateSubtask(subtask1);
 
         taskManager.getTaskById(1);
         taskManager.getTaskById(2);

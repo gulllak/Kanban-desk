@@ -1,8 +1,8 @@
-package services.impl;
+package ru.evgenii.kanban.services.impl;
 
-import models.Node;
-import models.Task;
-import services.HistoryManager;
+import ru.evgenii.kanban.models.Node;
+import ru.evgenii.kanban.models.Task;
+import ru.evgenii.kanban.services.HistoryManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

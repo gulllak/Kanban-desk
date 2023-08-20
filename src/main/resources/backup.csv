@@ -1,0 +1,5 @@
+id,type,name,status,description,epic
+1,TASK,Помыть кота,NEW,Берем кота и моем,
+7,EPIC,Сходить в магазин,NEW,Лента,
+
+1,7

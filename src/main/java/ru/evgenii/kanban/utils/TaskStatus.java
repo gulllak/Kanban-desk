@@ -1,4 +1,4 @@
-package utils;
+package ru.evgenii.kanban.utils;
 
 public enum TaskStatus {
     NEW,

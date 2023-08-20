@@ -1,4 +1,4 @@
-package models;
+package ru.evgenii.kanban.models;
 
 public class Node {
     public Node next;

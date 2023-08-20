@@ -1,6 +1,6 @@
-package services;
+package ru.evgenii.kanban.services;
 
-import models.Task;
+import ru.evgenii.kanban.models.Task;
 import java.util.List;
 
 public interface HistoryManager {

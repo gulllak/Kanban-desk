@@ -1,6 +1,7 @@
-package models;
+package ru.evgenii.kanban.models;
 
-import utils.TaskStatus;
+import ru.evgenii.kanban.utils.TaskStatus;
+import ru.evgenii.kanban.utils.TaskType;
 
 public class Task {
     protected int id;
@@ -9,10 +10,27 @@ public class Task {
     protected String description;
     protected TaskStatus status;
 
+    protected TaskType taskType;
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
+        this.taskType = TaskType.TASK;
+    }
+
+    public Task(String name, String description, TaskType taskType) {
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+        this.taskType = taskType;
+    }
+
+    public Task(int id, String name, String description, TaskStatus status, TaskType taskType) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.taskType = taskType;
     }
 
     public int getId() {
@@ -47,6 +65,14 @@ public class Task {
         this.status = status;
     }
 
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -54,6 +80,7 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", taskType=" + taskType +
                 '}';
     }
 }

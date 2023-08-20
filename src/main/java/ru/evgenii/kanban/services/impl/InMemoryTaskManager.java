@@ -1,12 +1,12 @@
-package services.impl;
+package ru.evgenii.kanban.services.impl;
 
-import models.Epic;
-import models.Subtask;
-import models.Task;
-import services.HistoryManager;
-import services.Managers;
-import services.TaskManager;
-import utils.TaskStatus;
+import ru.evgenii.kanban.models.Epic;
+import ru.evgenii.kanban.models.Subtask;
+import ru.evgenii.kanban.models.Task;
+import ru.evgenii.kanban.services.HistoryManager;
+import ru.evgenii.kanban.services.Managers;
+import ru.evgenii.kanban.services.TaskManager;
+import ru.evgenii.kanban.utils.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,11 +15,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
     private int idInc = 0;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Subtask> subtasks;
-    private final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Subtask> subtasks;
+    protected final HashMap<Integer, Epic> epics;
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();

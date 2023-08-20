@@ -1,13 +1,20 @@
-package models;
+package ru.evgenii.kanban.models;
 
-import utils.TaskStatus;
+import ru.evgenii.kanban.utils.TaskStatus;
+import ru.evgenii.kanban.utils.TaskType;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private List<Subtask> subtasks;
     public Epic(String name, String description) {
-        super(name, description);
+        super(name, description, TaskType.EPIC);
+        subtasks = new ArrayList<>();
+    }
+
+    public Epic(int id, String name, String description, TaskStatus status, TaskType taskType) {
+        super(id, name, description, status, taskType);
         subtasks = new ArrayList<>();
     }
 
@@ -36,6 +43,7 @@ public class Epic extends Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", taskType=" + taskType +
                 '}';
     }
 }

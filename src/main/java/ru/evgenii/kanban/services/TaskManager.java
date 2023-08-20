@@ -1,8 +1,8 @@
-package services;
+package ru.evgenii.kanban.services;
 
-import models.Epic;
-import models.Subtask;
-import models.Task;
+import ru.evgenii.kanban.models.Epic;
+import ru.evgenii.kanban.models.Subtask;
+import ru.evgenii.kanban.models.Task;
 import java.util.List;
 
 public interface TaskManager {
