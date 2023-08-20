@@ -3,6 +3,8 @@ package ru.evgenii.kanban.models;
 import ru.evgenii.kanban.utils.TaskStatus;
 import ru.evgenii.kanban.utils.TaskType;
 
+import java.util.Objects;
+
 public class Subtask extends Task {
     private Epic epic;
 
@@ -33,5 +35,19 @@ public class Subtask extends Task {
                 ", status=" + status +
                 ", taskType=" + taskType +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Subtask subtask = (Subtask) o;
+        return epic.getId() == subtask.epic.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), epic.getId());
     }
 }

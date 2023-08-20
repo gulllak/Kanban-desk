@@ -3,6 +3,8 @@ package ru.evgenii.kanban.models;
 import ru.evgenii.kanban.utils.TaskStatus;
 import ru.evgenii.kanban.utils.TaskType;
 
+import java.util.Objects;
+
 public class Task {
     protected int id;
 
@@ -82,5 +84,18 @@ public class Task {
                 ", status=" + status +
                 ", taskType=" + taskType +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+        Task task = (Task) o;
+        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status && taskType == task.taskType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, status, taskType);
     }
 }
