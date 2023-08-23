@@ -126,6 +126,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             }
 
             for(Task task : recoveredTasks.values()) {
+                if(task.getId() > fileBackedTasksManager.idInc) {
+                    fileBackedTasksManager.idInc = task.getId();
+                }
                 if(task.getTaskType() == TaskType.TASK) {
                     fileBackedTasksManager.tasks.put(task.getId(), task);
                 } else if(task.getTaskType() == TaskType.EPIC) {
@@ -136,8 +139,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                     fileBackedTasksManager.epics.get(epicId).getSubtasks().add((Subtask) task);
                 }
             }
-
-            fileBackedTasksManager.idInc = recoveredTasks.size();
 
             String historyLine = bufferedReader.readLine();
             List<Integer>  history = fileBackedTasksManager.formatter.historyFromString(historyLine);
