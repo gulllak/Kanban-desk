@@ -19,7 +19,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        history.removeNode(history.fastNodeSearch.get(id));
+        if(history.fastNodeSearch.containsKey(id)) {
+            history.removeNode(history.fastNodeSearch.get(id));
+        }
     }
 
     @Override

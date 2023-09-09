@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class Formatter extends InMemoryTaskManager {
     private static final String DELIMITER = ",";
     public String getHeader() {
-        return "id,type,name,status,description,epic";
+        return "id,type,name,status,description,epic,startTime,duration";
     }
 
     public String toString(Task task) {
@@ -28,7 +28,12 @@ public class Formatter extends InMemoryTaskManager {
                 .append(task.getDescription()).append(DELIMITER);
 
         if(task.getTaskType() == TaskType.SUBTASK) {
-            sb.append(((Subtask) task).getEpic().getId());
+            sb.append(((Subtask) task).getEpic().getId()).append(DELIMITER);
+        }
+
+        if(task.getStartTime() != null) {
+            sb.append(task.getStartTime().toString()).append(DELIMITER)
+                    .append(task.getDuration().getSeconds()/60);
         }
         return sb.toString();
     }
@@ -38,13 +43,27 @@ public class Formatter extends InMemoryTaskManager {
         String[] line = value.split(",");
         switch (line[1].toUpperCase()) {
             case "TASK":
-                task = new Task(Integer.parseInt(line[0]), line[2], line[4], TaskStatus.valueOf(line[3].toUpperCase()), TaskType.valueOf(line[1].toUpperCase()));
+                if(line.length > 5) {
+                    task = new Task(Integer.parseInt(line[0]), line[2], line[4], TaskStatus.valueOf(line[3].toUpperCase()), TaskType.valueOf(line[1].toUpperCase()), line[5], Integer.parseInt(line[6]));
+                } else {
+                    task = new Task(Integer.parseInt(line[0]), line[2], line[4], TaskStatus.valueOf(line[3].toUpperCase()), TaskType.valueOf(line[1].toUpperCase()));
+                }
                 break;
             case "EPIC":
                 task = new Epic(Integer.parseInt(line[0]), line[2], line[4], TaskStatus.valueOf(line[3].toUpperCase()), TaskType.valueOf(line[1].toUpperCase()));
                 break;
             case "SUBTASK":
-                task = new Subtask(Integer.parseInt(line[0]), line[2], line[4], TaskStatus.valueOf(line[3].toUpperCase()), TaskType.valueOf(line[1].toUpperCase()), (Epic) recoveredTasks.get(Integer.parseInt(line[5])));
+                if(line.length > 6) {
+                    task = new Subtask(Integer.parseInt(line[0]),
+                            line[2], line[4],
+                            TaskStatus.valueOf(line[3].toUpperCase()),
+                            TaskType.valueOf(line[1].toUpperCase()),
+                            (Epic) recoveredTasks.get(Integer.parseInt(line[5])),
+                            line[6],
+                            Integer.parseInt(line[7]));
+                } else {
+                    task = new Subtask(Integer.parseInt(line[0]), line[2], line[4], TaskStatus.valueOf(line[3].toUpperCase()), TaskType.valueOf(line[1].toUpperCase()), (Epic) recoveredTasks.get(Integer.parseInt(line[5])));
+                }
                 break;
         }
         return task;

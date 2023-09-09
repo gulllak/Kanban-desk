@@ -3,6 +3,8 @@ package ru.evgenii.kanban.models;
 import ru.evgenii.kanban.utils.TaskStatus;
 import ru.evgenii.kanban.utils.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -13,24 +15,61 @@ public class Task {
     protected TaskStatus status;
 
     protected TaskType taskType;
+    protected Duration duration;
+    protected LocalDateTime startTime;
+    //создание задачи без продолжительности и даты старта
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        this.startTime = null;
+        this.duration = Duration.ofMinutes(0);
         this.status = TaskStatus.NEW;
         this.taskType = TaskType.TASK;
     }
-
+    //создание задачи с продолжительностью и датой старта
+    public Task(String name, String description, String startTime, int duration) {
+        this.name = name;
+        this.description = description;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = LocalDateTime.parse(startTime);
+        this.status = TaskStatus.NEW;
+        this.taskType = TaskType.TASK;
+    }
+    //создание подзадачи без продолжительности и даты старта
     public Task(String name, String description, TaskType taskType) {
         this.name = name;
         this.description = description;
+        this.startTime = null;
+        this.duration = Duration.ofMinutes(0);
         this.status = TaskStatus.NEW;
         this.taskType = taskType;
     }
-
+    //создание подзадачи с продолжительности и датой старта
+    public Task(String name, String description, TaskType taskType, String startTime, int duration) {
+        this.name = name;
+        this.description = description;
+        this.startTime = LocalDateTime.parse(startTime);
+        this.duration = Duration.ofMinutes(duration);
+        this.status = TaskStatus.NEW;
+        this.taskType = taskType;
+    }
+    //создание из файла без времени
     public Task(int id, String name, String description, TaskStatus status, TaskType taskType) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.startTime = null;
+        this.duration = Duration.ofMinutes(0);
+        this.status = status;
+        this.taskType = taskType;
+    }
+    //создание из файла с временем
+    public Task(int id, String name, String description, TaskStatus status, TaskType taskType, String startTime, int duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startTime = LocalDateTime.parse(startTime);
+        this.duration = Duration.ofMinutes(duration);
         this.status = status;
         this.taskType = taskType;
     }
@@ -75,6 +114,26 @@ public class Task {
         this.taskType = taskType;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime == null ? null : startTime.plusMinutes(duration.toMinutes());
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -91,11 +150,11 @@ public class Task {
         if (this == o) return true;
         if (!(o instanceof Task)) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status && taskType == task.taskType;
+        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status && taskType == task.taskType && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, status, taskType);
+        return Objects.hash(id, name, description, status, taskType, duration, startTime);
     }
 }

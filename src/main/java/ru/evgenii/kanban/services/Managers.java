@@ -16,6 +16,6 @@ public class Managers {
     }
 
     public static TaskManager getFileBackedTasksManager() {
-        return new FileBackedTasksManager(Paths.get("backup.csv").toFile());
+        return new FileBackedTasksManager(Paths.get("src/main/resources/backup.csv").toFile());
     }
 }
