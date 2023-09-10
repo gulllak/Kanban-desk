@@ -118,7 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         task.setId(++idInc);
 
-        validate(task);
+        validateIntersection(task);
         tasks.put(task.getId(), task);
         prioritizedTasks.add(task);
 
@@ -131,7 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
         subtask.setId(++idInc);
-        validate(subtask);
+        validateIntersection(subtask);
         subtask.getEpic().getSubtasks().add(subtask);
 
         subtasks.put(subtask.getId(), subtask);
@@ -159,7 +159,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task updateTask(Task task) {
         if(tasks.containsKey(task.getId())) {
             prioritizedTasks.remove(tasks.get(task.getId()));
-            validate(task);
+            validateIntersection(task);
             tasks.put(task.getId(), task);
             prioritizedTasks.add(task);
 
@@ -174,7 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
         if(subtasks.containsKey(subtask.getId())) {
 
             prioritizedTasks.remove(subtasks.get(subtask.getId()));
-            validate(subtask);
+            validateIntersection(subtask);
             subtasks.put(subtask.getId(), subtask);
             prioritizedTasks.add(subtask);
 
@@ -279,7 +279,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setEndTime(endTime);
     }
 
-    private void validate(Task task) {
+    private void validateIntersection(Task task) {
         if(task.getStartTime() == null) {
             return;
         }

@@ -147,5 +147,20 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertEquals(epic, fileBackedTasksManager.getEpicById(1));
     }
 
+    @Test
+    void RecoveryIDAfterLoad() {
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(epic);
+
+        int idBefore = taskManager.idInc;
+
+        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(Paths.get("src/test/resources/testBackup.csv").toFile());
+
+        int idAfterLoad = fileBackedTasksManager.idInc;
+
+        assertEquals(idBefore, idAfterLoad, "ID не востановилось");
+    }
+
 
 }

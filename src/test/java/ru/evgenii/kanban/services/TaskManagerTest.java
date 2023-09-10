@@ -36,40 +36,50 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getAllTask() {
-        List<Task> tasks = taskManager.getAllTask();
-        assertEquals(0, tasks.size());
-
         taskManager.addTask(task1);
         taskManager.addTask(task2);
 
-        tasks = taskManager.getAllTask();
+        List<Task> tasks = taskManager.getAllTask();
+
         assertEquals(2, tasks.size());
     }
 
     @Test
-    void getAllSubtask() {
-        List<Subtask> subtasks = taskManager.getAllSubtask();
-        assertEquals(0, subtasks.size());
+    void getAllTaskWithEmptyTaskListShouldGive0() {
+        List<Task> tasks = taskManager.getAllTask();
+        assertEquals(0, tasks.size());
+    }
 
+    @Test
+    void getAllSubtaskShouldGive2() {
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
 
-        subtasks = taskManager.getAllSubtask();
+        List<Subtask> subtasks = taskManager.getAllSubtask();
         assertEquals(2, subtasks.size());
     }
 
     @Test
-    void getAllEpic() {
-        List<Epic> epics = taskManager.getAllEpic();
-        assertEquals(0, epics.size());
+    void getAllSubtaskWithEmptySubtaskListShouldGive0() {
+        List<Subtask> subtasks = taskManager.getAllSubtask();
+        assertEquals(0, subtasks.size());
+    }
 
+    @Test
+    void getAllEpicShouldGive1() {
         taskManager.addEpic(epic);
-        epics = taskManager.getAllEpic();
+        List<Epic> epics = taskManager.getAllEpic();
         assertEquals(1, epics.size());
     }
 
     @Test
-    void deleteAllTask() {
+    void getAllEpicWithEmptyEpicListShouldGive0() {
+        List<Epic> epics = taskManager.getAllEpic();
+        assertEquals(0, epics.size());
+    }
+
+    @Test
+    void deleteAllTaskShouldGive0() {
         taskManager.addTask(task1);
         taskManager.addTask(task2);
 
@@ -79,11 +89,20 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTask();
         tasks = taskManager.getAllTask();
         assertEquals(0, tasks.size());
-
     }
 
     @Test
-    void deleteAllSubtask() {
+    void deleteAllTaskWithEmptyListShouldGive0() {
+        List<Task> tasks = taskManager.getAllTask();
+        assertEquals(0, tasks.size());
+
+        taskManager.deleteAllTask();
+        tasks = taskManager.getAllTask();
+        assertEquals(0, tasks.size());
+    }
+
+    @Test
+    void deleteAllSubtaskShouldGive0() {
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
 
@@ -96,7 +115,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteAllEpic() {
+    void deleteAllSubtaskWithEmptyListShouldGive0() {
+        List<Subtask> subtasks = taskManager.getAllSubtask();
+        assertEquals(0, subtasks.size());
+
+        taskManager.deleteAllSubtask();
+        subtasks = taskManager.getAllSubtask();
+        assertEquals(0, subtasks.size());
+    }
+
+    @Test
+    void deleteAllEpicShouldGive0() {
         taskManager.addEpic(epic);
         List<Epic> epics = taskManager.getAllEpic();
         assertEquals(1, epics.size());
@@ -107,41 +136,84 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
+    void deleteAllEpicWithEmptyListShouldGive0() {
+        List<Epic> epics = taskManager.getAllEpic();
+        assertEquals(0, epics.size());
+
+        taskManager.deleteAllEpic();
+        epics = taskManager.getAllEpic();
+        assertEquals(0, epics.size());
+    }
+
+    @Test
+    void deleteAllEpicShouldGive0InSubtasks() {
+        taskManager.addEpic(epic);
+        taskManager.addSubtask(subtask1);
+        List<Epic> epics = taskManager.getAllEpic();
+        List<Subtask> subtasks = taskManager.getAllSubtask();
+        assertEquals(1, epics.size());
+        assertEquals(1, subtasks.size());
+
+        taskManager.deleteAllEpic();
+        epics = taskManager.getAllEpic();
+        subtasks = taskManager.getAllSubtask();
+        assertEquals(0, epics.size());
+        assertEquals(0, subtasks.size());
+    }
+
+    @Test
     void getTaskById() {
-        Task nullTask = taskManager.getTaskById(0);
-        assertNull(nullTask, "Задача существует");
-
-        nullTask = taskManager.getTaskById(999999);
-        assertNull(nullTask, "Задача существует");
-
         taskManager.addTask(task1);
         assertEquals(task1, taskManager.getTaskById(1));
+    }
 
+    @Test
+    void getTaskById_0_ShouldGiveNull() {
+        Task nullTask = taskManager.getTaskById(0);
+        assertNull(nullTask, "Задача существует");
+    }
+
+    @Test
+    void getTaskById_99999_ShouldGiveNull() {
+        Task nullTask = taskManager.getTaskById(99999);
+        assertNull(nullTask, "Задача существует");
     }
 
     @Test
     void getEpicById() {
-        Epic nullEpic = taskManager.getEpicById(0);
-        assertNull(nullEpic, "Эпик существует");
-
-        nullEpic = taskManager.getEpicById(999999);
-        assertNull(nullEpic, "Эпик существует");
-
         taskManager.addEpic(epic);
         assertEquals(epic, taskManager.getEpicById(1));
     }
 
     @Test
+    void getEpicById_0_ShouldGiveNull() {
+        Epic nullEpic = taskManager.getEpicById(0);
+        assertNull(nullEpic, "Эпик существует");
+    }
+
+    @Test
+    void getEpicById_99999_ShouldGiveNull() {
+        Epic nullEpic = taskManager.getEpicById(99999);
+        assertNull(nullEpic, "Эпик существует");
+    }
+
+    @Test
     void getSubtaskById() {
-        Subtask nullSubtask = taskManager.getSubtaskById(0);
-        assertNull(nullSubtask, "Подзадача существует");
-
-        nullSubtask = taskManager.getSubtaskById(999999);
-        assertNull(nullSubtask, "Подзадача существует");
-
         taskManager.addSubtask(subtask1);
         assertEquals(subtask1, taskManager.getSubtaskById(1));
         assertEquals(epic, taskManager.getSubtaskById(1).getEpic());
+    }
+
+    @Test
+    void getSubtaskById_0_ShouldGiveNull() {
+        Subtask nullSubtask = taskManager.getSubtaskById(0);
+        assertNull(nullSubtask, "Подзадача существует");
+    }
+
+    @Test
+    void getSubtaskById_99999_ShouldGiveNull() {
+        Subtask nullSubtask = taskManager.getSubtaskById(99999);
+        assertNull(nullSubtask, "Подзадача существует");
     }
 
     @Test
@@ -153,16 +225,32 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
+    void addNullTaskShouldGiveNull() {
+        assertNotNull(taskManager.getAllTask(), "Список не пустой");
+
+        taskManager.addTask(null);
+        assertEquals(0, taskManager.getAllTask().size(), "Задача добавилась");
+    }
+
+    @Test
     void addEpic() {
         List<Subtask> subtasks = new ArrayList<>();
         List<Epic> epics = new ArrayList<>();
         assertEquals(epics, taskManager.getAllEpic(), "Список не пустой");
 
         epics.add(taskManager.addEpic(epic));
-        assertEquals(1, taskManager.getAllEpic().size(), "Список пустой");
+        assertEquals(epics.size(), taskManager.getAllEpic().size(), "Список пустой");
 
         assertEquals(epic, taskManager.getEpicById(1));
         assertEquals(subtasks, taskManager.getEpicById(1).getSubtasks());
+    }
+
+    @Test
+    void addNullEpicShouldGiveNull() {
+        assertNotNull(taskManager.getAllEpic(), "Список не пустой");
+
+        taskManager.addEpic(null);
+        assertEquals(0, taskManager.getAllEpic().size(), "Эпик добавился");
     }
 
     @Test
@@ -171,19 +259,24 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(subtasks, taskManager.getAllSubtask(), "Список не пустой");
 
         subtasks.add(taskManager.addSubtask(subtask1));
-        assertEquals(1, taskManager.getAllSubtask().size(), "Список пустой");
+        assertEquals(subtasks.size(), taskManager.getAllSubtask().size(), "Список пустой");
 
         assertEquals(subtask1, taskManager.getSubtaskById(1));
         assertEquals(epic, taskManager.getSubtaskById(1).getEpic(), "Эпики не совпадают");
     }
 
     @Test
-    void updateTask() {
-        Task task = taskManager.updateTask(task1);
-        assertNull(task, "Задача существует");
+    void addNullSubtaskShouldGiveNull() {
+        assertNotNull(taskManager.getAllSubtask(), "Список не пустой");
 
+        taskManager.addSubtask(null);
+        assertEquals(0, taskManager.getAllSubtask().size(), "Подзадача добавилась");
+    }
+
+    @Test
+    void updateTask() {
         taskManager.addTask(task1);
-        task = taskManager.updateTask(task1);
+        Task task = taskManager.updateTask(task1);
         assertNotNull(task, "Задача не существует");
 
         task1.setName("Помыть собаку");
@@ -192,12 +285,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateSubtask() {
-        Subtask subtask = taskManager.updateSubtask(subtask1);
-        assertNull(subtask, "Подзадача существует");
+    void updateNotExistTask() {
+        Task task = taskManager.updateTask(task1);
+        assertNull(task, "Задача существует");
+    }
 
+    @Test
+    void updateSubtask() {
         taskManager.addSubtask(subtask1);
-        subtask = taskManager.updateSubtask(subtask1);
+        Subtask subtask = taskManager.updateSubtask(subtask1);
         assertNotNull(subtask, "Подзадачи не существует");
 
         subtask1.setName("Изменил имя");
@@ -207,10 +303,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateEpic() {
-        Epic epicNull = taskManager.updateEpic(epic);
-        assertNull(epicNull, "Эпик существует");
+    void updateNotExistSubtask() {
+        Subtask subtask = taskManager.updateSubtask(subtask1);
+        assertNull(subtask, "Подзадача существует");
+    }
 
+    @Test
+    void updateEpic() {
         taskManager.addEpic(epic);
         Epic epicNotNull = taskManager.updateEpic(epic);
         assertNotNull(epicNotNull, "Эпика не существует");
@@ -219,33 +318,24 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         epicNotNull = taskManager.updateEpic(epic);
         assertEquals(epicNotNull, taskManager.getEpicById(1), "Эпик не обновился");
     }
+
+    @Test
+    void updateNotExistEpic() {
+        Epic epicNull = taskManager.updateEpic(epic);
+        assertNull(epicNull, "Эпик существует");
+    }
+
     @Test
     void deleteTaskById() {
         taskManager.addTask(task1);
         List<Task> tasks = taskManager.getAllTask();
-
-        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
-                new Executable() {
-                    @Override
-                    public void execute() throws Throwable {
-                        taskManager.deleteTaskById(0);
-                    }
-                });
-
-        elementException = assertThrows(NoSuchElementException.class,
-                new Executable() {
-                    @Override
-                    public void execute() throws Throwable {
-                        taskManager.deleteTaskById(99999);
-                    }
-                });
 
         assertEquals(1, tasks.size());
         taskManager.deleteTaskById(1);
         tasks = taskManager.getAllTask();
         assertEquals(0, tasks.size());
 
-        elementException = assertThrows(NoSuchElementException.class,
+        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
                 new Executable() {
                     @Override
                     public void execute() throws Throwable {
@@ -255,32 +345,38 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteSubtaskById() {
-        taskManager.addSubtask(subtask1);
-        List<Subtask> subtasks = taskManager.getAllSubtask();
-
+    void deleteTaskById0ShouldGiveNoSuchElementException() {
         NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
                 new Executable() {
                     @Override
                     public void execute() throws Throwable {
-                        taskManager.deleteSubtaskById(0);
+                        taskManager.deleteTaskById(0);
                     }
                 });
+    }
 
-        elementException = assertThrows(NoSuchElementException.class,
+    @Test
+    void deleteTaskById99999ShouldGiveNoSuchElementException() {
+        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
                 new Executable() {
                     @Override
                     public void execute() throws Throwable {
-                        taskManager.deleteSubtaskById(99999);
+                        taskManager.deleteTaskById(99999);
                     }
                 });
+    }
+
+    @Test
+    void deleteSubtaskById() {
+        taskManager.addSubtask(subtask1);
+        List<Subtask> subtasks = taskManager.getAllSubtask();
 
         assertEquals(1, subtasks.size());
         taskManager.deleteSubtaskById(1);
         subtasks = taskManager.getAllSubtask();
         assertEquals(0, subtasks.size());
 
-        elementException = assertThrows(NoSuchElementException.class,
+        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
                 new Executable() {
                     @Override
                     public void execute() throws Throwable {
@@ -290,10 +386,48 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
+    void deleteSubtaskById0ShouldGiveNoSuchElementException() {
+        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        taskManager.deleteSubtaskById(0);
+                    }
+                });
+    }
+
+    @Test
+    void deleteSubtaskById99999ShouldGiveNoSuchElementException() {
+        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        taskManager.deleteSubtaskById(99999);
+                    }
+                });
+    }
+
+    @Test
     void deleteEpicById() {
         taskManager.addEpic(epic);
         List<Epic> epics = taskManager.getAllEpic();
 
+        assertEquals(1, epics.size());
+        taskManager.deleteEpicById(1);
+        epics = taskManager.getAllEpic();
+        assertEquals(0, epics.size());
+
+        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        taskManager.deleteEpicById(1);
+                    }
+                });
+    }
+
+    @Test
+    void deleteEpicById0ShouldGiveNoSuchElementException() {
         NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
                 new Executable() {
                     @Override
@@ -301,25 +435,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                         taskManager.deleteEpicById(0);
                     }
                 });
+    }
 
-        elementException = assertThrows(NoSuchElementException.class,
+    @Test
+    void deleteEpicById99999ShouldGiveNoSuchElementException() {
+        NoSuchElementException elementException = assertThrows(NoSuchElementException.class,
                 new Executable() {
                     @Override
                     public void execute() throws Throwable {
                         taskManager.deleteEpicById(99999);
-                    }
-                });
-
-        assertEquals(1, epics.size());
-        taskManager.deleteEpicById(1);
-        epics = taskManager.getAllEpic();
-        assertEquals(0, epics.size());
-
-        elementException = assertThrows(NoSuchElementException.class,
-                new Executable() {
-                    @Override
-                    public void execute() throws Throwable {
-                        taskManager.deleteEpicById(1);
                     }
                 });
     }
@@ -400,7 +524,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void validate() {
+    void validateIntersection() {
         taskManager.addTask(task1);
         Task notValidateTask = new Task("Помыть кота 2", "Берем кота и моем 2", "2023-09-01T17:00:00", 10);
 

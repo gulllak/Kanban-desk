@@ -26,7 +26,6 @@ public class Task {
         this.status = TaskStatus.NEW;
         this.taskType = TaskType.TASK;
     }
-    //создание задачи с продолжительностью и датой старта
     public Task(String name, String description, String startTime, int duration) {
         this.name = name;
         this.description = description;
@@ -35,7 +34,6 @@ public class Task {
         this.status = TaskStatus.NEW;
         this.taskType = TaskType.TASK;
     }
-    //создание подзадачи без продолжительности и даты старта
     public Task(String name, String description, TaskType taskType) {
         this.name = name;
         this.description = description;
@@ -44,7 +42,6 @@ public class Task {
         this.status = TaskStatus.NEW;
         this.taskType = taskType;
     }
-    //создание подзадачи с продолжительности и датой старта
     public Task(String name, String description, TaskType taskType, String startTime, int duration) {
         this.name = name;
         this.description = description;
@@ -53,7 +50,6 @@ public class Task {
         this.status = TaskStatus.NEW;
         this.taskType = taskType;
     }
-    //создание из файла без времени
     public Task(int id, String name, String description, TaskStatus status, TaskType taskType) {
         this.id = id;
         this.name = name;
@@ -63,7 +59,6 @@ public class Task {
         this.status = status;
         this.taskType = taskType;
     }
-    //создание из файла с временем
     public Task(int id, String name, String description, TaskStatus status, TaskType taskType, String startTime, int duration) {
         this.id = id;
         this.name = name;
