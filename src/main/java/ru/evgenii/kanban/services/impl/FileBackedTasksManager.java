@@ -6,9 +6,7 @@ import ru.evgenii.kanban.models.Subtask;
 import ru.evgenii.kanban.models.Task;
 import ru.evgenii.kanban.services.Formatter;
 import ru.evgenii.kanban.services.HistoryManager;
-import ru.evgenii.kanban.services.Managers;
 import ru.evgenii.kanban.services.TaskManager;
-import ru.evgenii.kanban.utils.TaskStatus;
 import ru.evgenii.kanban.utils.TaskType;
 
 import java.io.BufferedReader;
@@ -21,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
     final File fileName;
@@ -29,54 +26,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     public FileBackedTasksManager(File fileName) {
         this.fileName = Paths.get(fileName.toURI()).toFile();
-    }
-
-    public static void main(String[] args) {
-        TaskManager taskManager = Managers.getFileBackedTasksManager();
-
-        Task task1 = new Task("Помыть кота", "Берем кота и моем", "2023-09-01T12:00:00", 10);
-        Task task2 = new Task("Сходить к зубному", "Запись на 20:00");
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
-
-        //---------------------------------
-
-        Epic epic1 = new Epic("Написать код программы", "Янедкс Практикум");
-        Subtask subtask1 = new Subtask("Прочитать ТЗ", "Документ", epic1,"2023-09-01T12:10:00", 10);
-        Subtask subtask2 = new Subtask("Написать код", "Java", epic1,"2023-09-02T15:00:00", 120);
-        Subtask subtask3 = new Subtask("Протестировать код", "Java", epic1,"2023-09-01T15:00:00", 60);
-        taskManager.addEpic(epic1);
-        taskManager.addSubtask(subtask1);
-        taskManager.addSubtask(subtask2);
-        taskManager.addSubtask(subtask3);
-
-        //---------------------------------
-
-        Epic epic2 = new Epic("Сходить в магазин", "Лента");
-        taskManager.addEpic(epic2);
-
-        subtask1.setStatus(TaskStatus.IN_PROGRESS);
-        taskManager.updateSubtask(subtask1);
-
-        taskManager.getTaskById(1);
-        taskManager.getTaskById(2);
-        taskManager.getEpicById(3);
-        taskManager.getSubtaskById(6);
-        taskManager.getSubtaskById(5);
-        taskManager.getSubtaskById(4);
-        taskManager.getSubtaskById(6);
-        taskManager.getEpicById(3);
-        taskManager.getEpicById(7);
-
-        taskManager.deleteTaskById(2);
-
-        FileBackedTasksManager fileBackedTasksManager = loadFromFile(Paths.get("src/main/resources/backup.csv").toFile());
-
-        System.out.println("Таски равны: " + Objects.equals(fileBackedTasksManager.getAllTask(), taskManager.getAllTask()));
-        System.out.println("Эпики равны: " + Objects.equals(fileBackedTasksManager.getAllEpic(), taskManager.getAllEpic()));
-        System.out.println("Сабтаски равны: " + Objects.equals(fileBackedTasksManager.getAllSubtask(), taskManager.getAllSubtask()));
-
-        System.out.println("История равна: " + fileBackedTasksManager.getHistoryManager().getHistory().equals(taskManager.getHistoryManager().getHistory()));
     }
 
      void save() {
@@ -289,6 +238,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     @Override
     public List<Subtask> getEpicSubtasks(Epic epic) {
         return super.getEpicSubtasks(epic);
+    }
+
+    @Override
+    public List<Subtask> getAllSubtasksByEpicId(int id) {
+        return super.getAllSubtasksByEpicId(id);
     }
 
     @Override

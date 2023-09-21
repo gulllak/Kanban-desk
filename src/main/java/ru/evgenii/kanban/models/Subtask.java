@@ -28,6 +28,10 @@ public class Subtask extends Task {
         this.epic = epic;
     }
 
+    public Subtask(int id) {
+        super(id);
+    }
+
     public Epic getEpic() {
         return epic;
     }
@@ -39,11 +43,14 @@ public class Subtask extends Task {
     @Override
     public String toString() {
         return "Subtask{" +
-                "id=" + id +
+                "epic=" + epic.getId() +
+                ", id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", taskType=" + taskType +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 

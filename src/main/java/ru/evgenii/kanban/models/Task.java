@@ -69,6 +69,10 @@ public class Task {
         this.taskType = taskType;
     }
 
+    public Task(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
@@ -137,6 +141,8 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", taskType=" + taskType +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 

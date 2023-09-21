@@ -1,5 +1,6 @@
 package ru.evgenii.kanban.services.impl;
 
+import ru.evgenii.kanban.exeptions.ManagerSaveException;
 import ru.evgenii.kanban.exeptions.ValidationIntersectionException;
 import ru.evgenii.kanban.models.Epic;
 import ru.evgenii.kanban.models.Subtask;
@@ -132,7 +133,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subtask.setId(++idInc);
         validateIntersection(subtask);
-        subtask.getEpic().getSubtasks().add(subtask);
+        try {
+            subtask.getEpic().getSubtasks().add(subtask);
+        } catch (NullPointerException e) {
+            throw new ManagerSaveException("Эпика не существует");
+        }
+
 
         subtasks.put(subtask.getId(), subtask);
         prioritizedTasks.add(subtask);
@@ -192,6 +198,9 @@ public class InMemoryTaskManager implements TaskManager {
         if(epics.containsKey(epic.getId())) {
             epics.put(epic.getId(), epic);
 
+            updateEpicStatus(epic);
+            updateEpicTime(epic);
+
             return epic;
         } else {
             return null;
@@ -241,6 +250,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Subtask> getEpicSubtasks(Epic epic) {
         return epic.getSubtasks();
+    }
+
+    @Override
+    public List<Subtask> getAllSubtasksByEpicId(int id) {
+        if(!epics.containsKey(id)) {
+            throw new NoSuchElementException();
+        }
+        return epics.get(id).getSubtasks();
     }
 
     @Override

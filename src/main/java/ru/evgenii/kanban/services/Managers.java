@@ -1,6 +1,7 @@
 package ru.evgenii.kanban.services;
 
 import ru.evgenii.kanban.services.impl.FileBackedTasksManager;
+import ru.evgenii.kanban.services.impl.HttpTaskManager;
 import ru.evgenii.kanban.services.impl.InMemoryHistoryManager;
 import ru.evgenii.kanban.services.impl.InMemoryTaskManager;
 
@@ -18,4 +19,9 @@ public class Managers {
     public static TaskManager getFileBackedTasksManager() {
         return new FileBackedTasksManager(Paths.get("src/main/resources/backup.csv").toFile());
     }
+
+    public static TaskManager getHttpTaskManager() {
+        return new HttpTaskManager("http://localhost:8078");
+    }
+
 }

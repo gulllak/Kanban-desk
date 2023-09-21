@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Epic extends Task {
     private List<Subtask> subtasks;
@@ -24,6 +25,10 @@ public class Epic extends Task {
     public Epic(int id, String name, String description, TaskStatus status, TaskType taskType, String startTime, int duration) {
         super(id, name, description, status, taskType, startTime, duration);
         this.subtasks = new ArrayList<>();
+    }
+
+    public Epic(int id) {
+        super(id);
     }
 
     public List<Subtask> getSubtasks() {
@@ -53,16 +58,18 @@ public class Epic extends Task {
         this.endTime = endTime;
     }
 
-
-
     @Override
     public String toString() {
         return "Epic{" +
-                "id=" + id +
+                "subtasks=" + subtasks.stream().map(Task::getId).collect(Collectors.toList()) +
+                ", endTime=" + endTime +
+                ", id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", taskType=" + taskType +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 
