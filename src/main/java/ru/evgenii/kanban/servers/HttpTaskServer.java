@@ -18,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+
 public class HttpTaskServer {
     private static final int PORT = 8080;
     private final HttpServer httpServer;
@@ -70,73 +72,75 @@ public class HttpTaskServer {
         InputStream io = httpExchange.getRequestBody();
         String json = new String(io.readAllBytes(), StandardCharsets.UTF_8);
 
-        if(!json.isEmpty()) {
-            if (url.contains("/tasks/task")) {
-                Task task = gson.fromJson(json, Task.class);
+        if(json.isEmpty()) {
+            writeResponse(httpExchange, "", 400);
+            return;
+        }
 
-                boolean isUpdate = taskManager.getAllTask().stream().anyMatch(s -> s.getId() == task.getId());
-                if (isUpdate) {
-                    taskManager.updateTask(task);
-                } else {
-                    taskManager.addTask(task);
-                }
-                writeResponse(httpExchange, gson.toJson("OK"), 200);
+        if (url.contains("/tasks/task")) {
+            Task task = gson.fromJson(json, Task.class);
+
+            boolean isUpdate = taskManager.getAllTask().stream().anyMatch(s -> s.getId() == task.getId());
+            if (isUpdate) {
+                taskManager.updateTask(task);
+            } else {
+                taskManager.addTask(task);
             }
-            if (url.contains("/tasks/subtask")) {
-                Subtask subtask = gson.fromJson(json, Subtask.class);
-                try {
-                    Epic epic = taskManager.getAllEpic().stream().filter(s -> s.getId() == subtask.getEpic().getId()).findFirst().orElseThrow(NullPointerException::new);
-                    subtask.setEpic(epic);
-                } catch (NullPointerException e) {
-                    writeResponse(httpExchange, "", 400);
-                    return;
-                }
+            writeResponse(httpExchange, gson.toJson("OK"), 200);
+        }
+        if (url.contains("/tasks/subtask")) {
+            Subtask subtask = gson.fromJson(json, Subtask.class);
 
-                boolean isUpdate = taskManager.getAllSubtask().stream().anyMatch(s -> s.getId() == subtask.getId());
-
-                if (isUpdate) {
-                    taskManager.updateSubtask(subtask);
-                } else {
-                    taskManager.addSubtask(subtask);
-                }
-                writeResponse(httpExchange, gson.toJson("OK"), 200);
+            Optional<Epic> epic = taskManager.getAllEpic().stream().filter(s -> s.getId() == subtask.getEpic().getId()).findFirst();
+            if(epic.isEmpty()){
+                writeResponse(httpExchange, "", 400);
+                return;
+            } else {
+                subtask.setEpic(epic.get());
             }
-            if (url.contains("/tasks/epic")) {
-                Epic epic = gson.fromJson(json, Epic.class);
 
-                try {
-                    List<Subtask> createSubtasks = new ArrayList<>();
-                    if (!epic.getSubtasks().isEmpty()) {
-                        List<Subtask> subtasks = taskManager.getAllSubtask();
-                        for (Subtask tempSubtask : epic.getSubtasks()) {
-                            for (Subtask realSubtask : subtasks) {
-                                if (tempSubtask.getId() == realSubtask.getId()) {
-                                    createSubtasks.add(realSubtask);
-                                }
+            boolean isUpdate = taskManager.getAllSubtask().stream().anyMatch(s -> s.getId() == subtask.getId());
+
+            if (isUpdate) {
+                taskManager.updateSubtask(subtask);
+            } else {
+                taskManager.addSubtask(subtask);
+            }
+            writeResponse(httpExchange, gson.toJson("OK"), 200);
+        }
+        if (url.contains("/tasks/epic")) {
+            Epic epic = gson.fromJson(json, Epic.class);
+
+            try {
+                List<Subtask> createSubtasks = new ArrayList<>();
+                if (!epic.getSubtasks().isEmpty()) {
+                    List<Subtask> subtasks = taskManager.getAllSubtask();
+                    for (Subtask tempSubtask : epic.getSubtasks()) {
+                        for (Subtask realSubtask : subtasks) {
+                            if (tempSubtask.getId() == realSubtask.getId()) {
+                                createSubtasks.add(realSubtask);
                             }
                         }
-                        if (createSubtasks.size() != epic.getSubtasks().size()) {
-                            writeResponse(httpExchange, "", 400);
-                            return;
-                        }
                     }
-                    epic.setSubtasks(createSubtasks);
-                } catch (NullPointerException e) {
-                    writeResponse(httpExchange, "", 400);
-                    return;
+                    if (createSubtasks.size() != epic.getSubtasks().size()) {
+                        writeResponse(httpExchange, "", 400);
+                        return;
+                    }
                 }
-
-                boolean isUpdate = taskManager.getAllEpic().stream().anyMatch(s -> s.getId() == epic.getId());
-
-                if (isUpdate) {
-                    taskManager.updateEpic(epic);
-                } else {
-                    taskManager.addEpic(epic);
-                }
-                writeResponse(httpExchange, gson.toJson("OK"), 200);
+                epic.setSubtasks(createSubtasks);
+            } catch (NullPointerException e) {
+                writeResponse(httpExchange, "", 400);
+                return;
             }
-        } else {
-            writeResponse(httpExchange, "", 400);
+
+            boolean isUpdate = taskManager.getAllEpic().stream().anyMatch(s -> s.getId() == epic.getId());
+
+            if (isUpdate) {
+                taskManager.updateEpic(epic);
+            } else {
+                taskManager.addEpic(epic);
+            }
+            writeResponse(httpExchange, gson.toJson("OK"), 200);
         }
     }
 

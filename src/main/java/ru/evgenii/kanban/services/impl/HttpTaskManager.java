@@ -22,8 +22,8 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private static final String EPICS_KEY = "epics";
     private static final String SUBTASKS_KEY = "subtasks";
     private static final String HISTORY_KEY = "history";
-    KVTaskClient client;
-    Gson gson;
+    private final KVTaskClient client;
+    private final Gson gson;
 
     public HttpTaskManager(String url) {
         super(Paths.get("src/main/resources/backup.csv").toFile());
@@ -50,38 +50,17 @@ public class HttpTaskManager extends FileBackedTasksManager {
         client.put(HISTORY_KEY, jsonHistory);
     }
 
-    public void loadFromKVServer() {
-        boolean isKVServerEmpty = true;
+    protected void loadFromKVServer() {
+        boolean isKVServerEmpty;
         Map<Integer, Task> recoveredTasks = new LinkedHashMap<>();
         String tasksJson = client.load(TASKS_KEY);
-        if(!tasksJson.equals("null")) {
-            tasksJson=tasksJson.substring(1, tasksJson.length() - 1).trim().replaceAll("\\\\", "");
-            Type listType = new TypeToken<List<Task>>(){}.getType();
-
-            List<Task> tasks = gson.fromJson(tasksJson, listType);
-            tasks.forEach(task -> recoveredTasks.put(task.getId(), task));
-            isKVServerEmpty = false;
-        }
+        isKVServerEmpty = loadTasksFromServer(tasksJson, recoveredTasks);
 
         String epicsJson = client.load(EPICS_KEY);
-        if(!epicsJson.equals("null")) {
-            epicsJson = epicsJson.substring(1, epicsJson.length() - 1).trim().replaceAll("\\\\", "");
-            Type listType = new TypeToken<List<Epic>>(){}.getType();
-
-            List<Epic> epics = gson.fromJson(epicsJson, listType);
-            epics.forEach(epic -> recoveredTasks.put(epic.getId(), epic));
-            isKVServerEmpty = false;
-        }
+        isKVServerEmpty = loadEpicsFromServer(epicsJson, recoveredTasks);
 
         String subtasksJson = client.load(SUBTASKS_KEY);
-        if(!subtasksJson.equals("null")) {
-            subtasksJson = subtasksJson.substring(1, subtasksJson.length() - 1).trim().replaceAll("\\\\", "");
-            Type listType = new TypeToken<List<Subtask>>(){}.getType();
-
-            List<Subtask> subtasks = gson.fromJson(subtasksJson, listType);
-            subtasks.forEach(subtask -> recoveredTasks.put(subtask.getId(), subtask));
-            isKVServerEmpty = false;
-        }
+        isKVServerEmpty = loadSubtasksFromServer(subtasksJson, recoveredTasks);
 
         for (Task task : recoveredTasks.values()) {
             if(task instanceof Epic) {
@@ -115,15 +94,56 @@ public class HttpTaskManager extends FileBackedTasksManager {
             }
 
             String historyJson = client.load(HISTORY_KEY);
-            if (!historyJson.equals("null")) {
-                historyJson = historyJson.substring(1, historyJson.length() - 1).trim();
-                Type historyType = new TypeToken<ArrayList<String>>() {}.getType();
-                List<String> history = gson.fromJson(historyJson, historyType);
+            loadHistoryFromServer(historyJson, recoveredTasks);
+        }
+    }
 
-                for (String id : history) {
-                    this.historyManager.add(recoveredTasks.get(Integer.parseInt(id)));
-                }
+    private boolean loadTasksFromServer(String tasksJson, Map<Integer, Task> recoveredTasks){
+        if(!tasksJson.equals("null")) {
+            tasksJson=tasksJson.substring(1, tasksJson.length() - 1).trim().replaceAll("\\\\", "");
+            Type listType = new TypeToken<List<Task>>(){}.getType();
+
+            List<Task> tasks = gson.fromJson(tasksJson, listType);
+            tasks.forEach(task -> recoveredTasks.put(task.getId(), task));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean loadEpicsFromServer(String epicsJson, Map<Integer, Task> recoveredTasks){
+        if(!epicsJson.equals("null")) {
+            epicsJson = epicsJson.substring(1, epicsJson.length() - 1).trim().replaceAll("\\\\", "");
+            Type listType = new TypeToken<List<Epic>>(){}.getType();
+
+            List<Epic> epics = gson.fromJson(epicsJson, listType);
+            epics.forEach(epic -> recoveredTasks.put(epic.getId(), epic));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean loadSubtasksFromServer(String subtasksJson, Map<Integer, Task> recoveredTasks) {
+        if(!subtasksJson.equals("null")) {
+            subtasksJson = subtasksJson.substring(1, subtasksJson.length() - 1).trim().replaceAll("\\\\", "");
+            Type listType = new TypeToken<List<Subtask>>(){}.getType();
+
+            List<Subtask> subtasks = gson.fromJson(subtasksJson, listType);
+            subtasks.forEach(subtask -> recoveredTasks.put(subtask.getId(), subtask));
+            return false;
+        }
+        return true;
+    }
+
+    private void loadHistoryFromServer(String historyJson, Map<Integer, Task> recoveredTasks) {
+        if (!historyJson.equals("null")) {
+            historyJson = historyJson.substring(1, historyJson.length() - 1).trim();
+            Type historyType = new TypeToken<ArrayList<String>>() {}.getType();
+            List<String> history = gson.fromJson(historyJson, historyType);
+
+            for (String id : history) {
+                this.historyManager.add(recoveredTasks.get(Integer.parseInt(id)));
             }
         }
     }
+
 }

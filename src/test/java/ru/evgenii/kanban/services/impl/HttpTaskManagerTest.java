@@ -1,6 +1,5 @@
 package ru.evgenii.kanban.services.impl;
 
-import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.evgenii.kanban.models.Epic;
@@ -10,7 +9,6 @@ import ru.evgenii.kanban.servers.HttpTaskServer;
 import ru.evgenii.kanban.servers.KVServer;
 import ru.evgenii.kanban.services.Managers;
 import ru.evgenii.kanban.services.TaskManager;
-import ru.evgenii.kanban.utils.TaskTypeAdapter;
 
 import java.io.IOException;
 
@@ -20,7 +18,6 @@ class HttpTaskManagerTest {
 
     TaskManager taskManager;
     HttpTaskServer httpTaskServer;
-    Gson gson = TaskTypeAdapter.getGson();
     Task task;
     Epic epic;
     Subtask subtask;
@@ -42,7 +39,7 @@ class HttpTaskManagerTest {
     }
 
     @Test
-    void saveAndLoad() throws IOException {
+    void saveAndLoad() {
         HttpTaskManager httpTaskManager = new HttpTaskManager("http://localhost:8078");
 
         assertEquals(taskManager.getPrioritizedTasks(), httpTaskManager.getPrioritizedTasks(), "Приоритеты не равны");
@@ -51,5 +48,4 @@ class HttpTaskManagerTest {
         assertEquals(taskManager.getAllEpic(), httpTaskManager.getAllEpic(), "Эпики не равны");
         assertEquals(taskManager.getHistoryManager().getHistory(), httpTaskManager.getHistoryManager().getHistory(), "История не равны");
     }
-
 }
