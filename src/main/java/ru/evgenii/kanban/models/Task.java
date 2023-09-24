@@ -17,7 +17,6 @@ public class Task {
     protected TaskType taskType;
     protected Duration duration;
     protected LocalDateTime startTime;
-    //создание задачи без продолжительности и даты старта
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
